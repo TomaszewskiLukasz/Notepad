@@ -1,0 +1,77 @@
+public class Main {
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Main");
+        frame.setSize(1024, 768);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        TextArea textArea = new TextArea("", 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
+        frame.add(textArea);
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu save = new JMenu("Save");
+        menuBar.add(save);
+        save.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent menuEvent) {
+                JFileChooser save = new JFileChooser();
+                int option = save.showSaveDialog(save);
+
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        BufferedWriter out = new BufferedWriter(new FileWriter(save.getSelectedFile().getPath()));
+                        out.write(textArea.getText());
+                        out.close();
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent menuEvent) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent menuEvent) {
+
+            }
+        });
+
+        JMenu load = new JMenu("Load");
+        menuBar.add(load);
+        load.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent menuEvent) {
+                JFileChooser open = new JFileChooser();
+                int option = open.showOpenDialog(open);
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    textArea.setText("");
+                    try {
+                        Scanner scan = new Scanner(new FileReader(open.getSelectedFile().getPath()));
+                        while (scan.hasNext())
+                            textArea.append(scan.nextLine() + "\n");
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
+            
+            @Override
+            public void menuDeselected(MenuEvent menuEvent) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent menuEvent) {
+
+            }
+        });
+
+        frame.setJMenuBar(menuBar);
+        frame.setVisible(true);
+    }
+}
